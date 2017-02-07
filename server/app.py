@@ -20,6 +20,17 @@ bombs = [
             'user': 'tsudot',
             },
         {
+            'name': 'Butter',
+            'country': 'India',
+            'yield': 1600,
+            'radius': 15,
+            'fillKey': 'Mumbai',
+            'latitude': 26.4595,
+            'longitude': 74.0266,
+            'user': 'tsudot',
+            },
+
+        {
             'name': 'Rice',
             'country': 'India',
             'yield': 1600,
@@ -28,7 +39,17 @@ bombs = [
             'latitude': 19.0760,
             'longitude': 72.8777,
             'user': 'tsudot',
-            }
+            },
+        {
+            'name': 'Olives',
+            'country': 'India',
+            'yield': 1600,
+            'radius': 15,
+            'fillKey': 'Gurgaon',
+            'latitude': 20.0760,
+            'longitude': 75.8777,
+            'user': 'tsudot',
+            },
         ];
 
 
@@ -36,10 +57,14 @@ bombs = [
 def connect(sid, environ):
     print("connect ", sid)
     sio.emit('search_event', json.dumps(bombs))
+    print("message sent")
     time.sleep(2);
-    sio.emit('search_event', json.dumps(bombs[0]))
+    sio.emit('search_event', json.dumps([bombs[0]]))
+    print("message sent")
     time.sleep(2);
-    sio.emit('search_event', json.dumps(bombs[1]))
+    sio.emit('search_event', json.dumps([bombs[1]]))
+    print("message sent")
+    sio.emit('search_event', json.dumps([bombs[2]]))
     print("message sent")
 
 @sio.on('search_event')

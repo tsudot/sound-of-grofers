@@ -63,7 +63,7 @@ $(document).ready(function() {
 
     world_map.bubbles([]);
 
-    var socket = io('http://localhost:8086/');
+    var socket = io('http://192.168.1.4:8086/');
     socket.on('search_event', function(message){
         console.log(message);
         var data = JSON.parse(message);
