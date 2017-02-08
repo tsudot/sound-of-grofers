@@ -8,7 +8,7 @@ $(document).ready(function() {
 
 	var order_bombs = [];
 
-	var EVENT_POPUP_WINDOW = 3;
+	var EVENT_POPUP_WINDOW = 20;
 
 	// Write your code in the same way as for native WebSocket:
 	ws.onopen = function() {
@@ -19,7 +19,7 @@ $(document).ready(function() {
 		// Receives a message.
 		var data = JSON.parse(e.data)
 
-		if (data['event'] == "orders") {
+		if (data['event'] == "receive_order") {
 			order_bombs.push(data['data'][0])
 			console.log('bombs')
 			console.log(bombs);
@@ -51,7 +51,7 @@ $(document).ready(function() {
 			'orders': '#3296DB'
         },
 		data: {
-			'orders': {fillKey: 'orders'}
+			'receive_order': {fillKey: 'receive_order'}
 		},
         response: true,
         setProjection: function(element) {
