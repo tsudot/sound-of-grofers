@@ -37,7 +37,7 @@
             </div>
 
             <div class="footer">
-                <p>♥ from Grofers Engineering</p>
+                <p>Grofers Engineering</p>
             </div>
         </div>
 
@@ -61,7 +61,9 @@ ga('create','UA-XXXXX-X');ga('send','pageview');
         <!-- endbower -->
         <!-- endbuild -->
 
-        <script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
+        <!--script src="https://cdn.socket.io/socket.io-1.1.0.js"></script-->
+        <script type="text/javascript" src="/bower_components/web-socket-js/swfobject.js"></script>
+        <script type="text/javascript" src="/bower_components/web-socket-js/web_socket.js"></script>
 
         <!-- build:js scripts/plugins.js -->
         <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/affix.js"></script>
@@ -81,5 +83,9 @@ ga('create','UA-XXXXX-X');ga('send','pageview');
         <!-- build:js scripts/main.js -->
         <script src="scripts/main.js"></script>
         <!-- endbuild -->
+
+        <script>
+            WEB_SOCKET_SWF_LOCATION = "/bower_components/web-socket-js/WebSocketMain.swf";
+        </script>
     </body>
 </html>

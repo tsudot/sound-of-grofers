@@ -2,7 +2,40 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
 $(document).ready(function() {
+    var ws = new WebSocket("ws://172.31.80.41:8086/");
+
+	var order_bombs = [];
+
+	var EVENT_POPUP_WINDOW = 3;
+
+	// Write your code in the same way as for native WebSocket:
+	ws.onopen = function() {
+		ws.send("Hello");  // Sends a message.
+	};
+
+	ws.onmessage = function(e) {
+		// Receives a message.
+		var data = JSON.parse(e.data)
+
+		if (data['event'] == "orders") {
+			order_bombs.push(data['data'][0])
+			console.log('bombs')
+			console.log(bombs);
+			console.log('order_bombs');
+			console.log(order_bombs.slice(-EVENT_POPUP_WINDOW));
+			world_map.bubbles(order_bombs.slice(-EVENT_POPUP_WINDOW));
+		}
+
+	};
+
+	ws.onclose = function() {
+		console.log("closed");
+	};
+
+
+
     var world_map = new Datamap({
         element: document.getElementById('map'),
         scope: 'world',
@@ -14,8 +47,12 @@ $(document).ready(function() {
         fills: {
             defaultFill: '#ccc',
             'add': '#306596',
-            'subtract': '#cc4731'
+            'subtract': '#cc4731',
+			'orders': '#3296DB'
         },
+		data: {
+			'orders': {fillKey: 'orders'}
+		},
         response: true,
         setProjection: function(element) {
             var projection = d3.geo.equirectangular()
@@ -26,7 +63,15 @@ $(document).ready(function() {
                 .projection(projection);
 
             return {path: path, projection: projection};
-        }
+        },
+		bubblesConfig: {
+			popupTemplate: function (geo, data) {
+				return ['<div class="hoverinfo">' +  data.name,
+					'<br/>User: ' + data.user + '',
+					'<br/>Country: ' +  data.country + '',
+					'</div>'].join('');
+			}
+		},
 
     });
 
@@ -48,27 +93,22 @@ $(document).ready(function() {
         user: 'gsin',
         latitude: 19.0760,
         longitude: 72.8777
-
     }
     ];
 
-    world_map.bubbles(bombs, {
-        popupTemplate: function (geo, data) {
-            return ['<div class="hoverinfo">' +  data.name,
-                '<br/>User: ' + data.user + '',
-                '<br/>Country: ' +  data.country + '',
-                '</div>'].join('');
-        }
-    });
-
     world_map.bubbles([]);
-
-    var socket = io('http://192.168.1.4:8086/');
-    socket.on('search_event', function(message){
+/**
+    var socket = io('http://172.31.80.41:8086/');
+    socket.on("connect", function () {
+        console.log("Connected!");
+    });
+    socket.on('receive_order', function(message){
         console.log(message);
         var data = JSON.parse(message);
 
         world_map.bubbles(data);
     })
+**/
 });
+
 
