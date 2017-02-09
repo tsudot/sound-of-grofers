@@ -21,7 +21,7 @@ body {
 .header,
 .marketing,
 .footer {
-  padding-left: 15px;
+  padding-left: 0px;
   padding-right: 15px;
 }
 
@@ -92,9 +92,23 @@ body {
   }
 }
 
+.legend {
+    text-align: center;
+    padding: 300px 30px 15px 140px;
+    font-family: "Lucida Grande";
+}
+
+.legend #city {
+    font-size: 20px;
+}
+
+.legend #customer_name {
+    font-size: 40px;
+    font-weight: bold;
+}
 
 /* Map area: Including neighboring countries*/
 #map {
-    height: 480px;
+    height: 600px;
     width:700px;
 }

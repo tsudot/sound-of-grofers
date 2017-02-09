@@ -6,7 +6,8 @@
     "modernizr": "~2.8.1",
     "datamaps": "0.5.0",
     "web-socket-js": "~v1.0.2",
-    "howler": "~v2.0.2"
+    "howler": "~v2.0.2",
+    "css-ripple-effect": "^1.0.5"
   },
   "overrides": {
     "bootstrap-sass": {

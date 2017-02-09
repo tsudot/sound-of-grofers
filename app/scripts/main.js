@@ -2,24 +2,26 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
 
 $(document).ready(function() {
     var EVENT_POPUP_WINDOW = 20;
-    var WS_HOST = "172.31.80.41"
-    var WS_PORT = 8086
+    var WS_HOST = "heartbeat.grofer.io"
+    var WS_PORT = 443
 
-    var ws = new WebSocket("ws://" + WS_HOST + ":" + WS_PORT + "/");
+    var ws = new WebSocket("wss://" + WS_HOST + ":" + WS_PORT + "/");
 
     var receive_order_bombs = [];
     var other_bombs = [];
     var receive_order_ui_pops = [];
     var other_ui_pops = [];
 
+    // Heartbeat sound
     var beat = new Howl({
           src: ['./assets/sound/beat.wav']
     });
-
-
 
     // Write your code in the same way as for native WebSocket:
     ws.onopen = function() {
@@ -33,7 +35,8 @@ $(document).ready(function() {
         if (data['event'] == "receive_order") {
             receive_order_bombs.push(data['data'][0])
             receive_order_ui_pops = receive_order_bombs.slice(-EVENT_POPUP_WINDOW);
-            beat.play();
+            $('.legend #customer_name').text(toTitleCase(data['data'][0]['customer_name']))
+            $('.legend #city').text(toTitleCase(data['data'][0]['city']))
         }
         else {
             other_bombs.push(data['data'][0])
@@ -41,6 +44,7 @@ $(document).ready(function() {
         }
 
         world_map.bubbles(receive_order_ui_pops.concat(other_ui_pops));
+        beat.play();
 
     };
 
@@ -53,26 +57,38 @@ $(document).ready(function() {
         scope: 'world',
         geography_config: {
             highlightOnHover: false,
-            popupOnHover: false
+            popupOnHover: false,
+            highlightBorderColor: '#7d7d7d',
+            highlightBorderWidth: 1,
+            popupTemplate: function (geo, data) {
+                if ( !data ) return;
+                return ['<div class="hoverinfo"><strong>',
+                    'Milestones in ' + geo.properties.name,
+                    ': ' + data.Tasks,
+                    '</strong></div>'].join('');
+            },
+            borderColor: '#ccc',
+            borderWidth: 0
         },
         projection: 'mercator',
         fills: {
-            defaultFill: '#ccc',
             'add': '#306596',
             'subtract': '#cc4731',
-            'receive_order': '#3296DB',
-            'other': '#F26E21'
+            'receive_order': '#01ffff',
+            'other': '#F26E21',
+            'IND': '#004057',
+            defaultFill: '#d8e7ed'
         },
         data: {
             'receive_order': {fillKey: 'receive_order'},
-            'other': {fillKey: 'other'}
+            'other': {fillKey: 'other'},
+            'IND': {fillKey: 'IND'}
         },
-
-        response: true,
+        responsive: true,
         setProjection: function(element) {
             var projection = d3.geo.equirectangular()
-                .center([80, 25])
-                .scale(800)
+                .center([80, 21])
+                .scale(1000)
                 .translate([element.offsetWidth / 2, element.offsetHeight / 2]);
             var path = d3.geo.path()
                 .projection(projection);
@@ -86,8 +102,10 @@ $(document).ready(function() {
                     '<br/>Country: ' +  data.country + '',
                     '</div>'].join('');
             },
-            borderWidth: 0,
-            borderOpacity: 0
+            borderWidth: 1,
+            borderOpacity: 1,
+            highlightBorderColor: '#ccc',
+            highlightFillOpacity: 0
         },
     });
 
