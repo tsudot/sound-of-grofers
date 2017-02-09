@@ -15,6 +15,12 @@ $(document).ready(function() {
     var receive_order_ui_pops = [];
     var other_ui_pops = [];
 
+    var beat = new Howl({
+          src: ['./assets/sound/beat.wav']
+    });
+
+
+
     // Write your code in the same way as for native WebSocket:
     ws.onopen = function() {
         ws.send("Hello");  // Sends a message.
@@ -27,6 +33,7 @@ $(document).ready(function() {
         if (data['event'] == "receive_order") {
             receive_order_bombs.push(data['data'][0])
             receive_order_ui_pops = receive_order_bombs.slice(-EVENT_POPUP_WINDOW);
+            beat.play();
         }
         else {
             other_bombs.push(data['data'][0])
