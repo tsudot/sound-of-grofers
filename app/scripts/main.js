@@ -9,9 +9,9 @@ function toTitleCase(str) {
 $(document).ready(function() {
     var EVENT_POPUP_WINDOW = 20;
     var WS_HOST = "heartbeat.grofer.io"
-    var WS_PORT = 443
+    var WS_PORT = 8086
 
-    var ws = new WebSocket("wss://" + WS_HOST + ":" + WS_PORT + "/");
+    var ws = new WebSocket("ws://" + WS_HOST + ":" + WS_PORT + "/");
 
     var receive_order_bombs = [];
     var other_bombs = [];
