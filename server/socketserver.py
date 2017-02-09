@@ -63,7 +63,6 @@ def callback():
                 try:
                     cord = order['delivery_address']['coordinates']
                     print 'got cords: {} from event: {}'.format(cord, event_name)
-                    #import pdb; pdb.set_trace()
                     lat = cord['lat']
                     lon = cord['lon']
                     msg = {'data': [
@@ -84,7 +83,6 @@ def callback():
                             msg, client)
                         client.sendMessage(address + u'' + json.dumps(msg))
                 except Exception as e:
-                    import pdb; pdb.set_trace()
                     print 'no cords found in {}, skipping'.format(event_name)
                     continue
             #for client in clients:
