@@ -24,8 +24,11 @@ class GrofersEvent(WebSocket):
         address = self.address[0]
 
     def handleClose(self):
-        clients.remove(self)
-        print self.address, 'closed'
+        try:
+            clients.remove(self)
+            print self.address, 'closed'
+        except:
+            pass
         # for client in clients:
         #     client.sendMessage(self.address[0] + u' - disconnected')
 
@@ -40,47 +43,53 @@ hb_redis_pool = redis.ConnectionPool(
     port=REDIS_PORT,
     db=REDIS_DB)
 
-import time
 
 def callback():
     r = redis.Redis(connection_pool=hb_redis_pool)
     sub = r.pubsub()
-    sub.subscribe('orders')
+    sub.subscribe('order_events')
     while True:
         for m in sub.listen():
             #print m
             if m:
+                time.sleep(1)
                 try:
                     event = json.loads(m['data'])
                 except:
                     continue
                 event_name = event['_meta']['event_name']
                 print 'Received event: {}'.format(event_name)
+                print 'Connected clients: {}'.format(
+                    [c.address for c in clients])
                 fill_key = 'receive_order'
                 if event_name != 'receive_order':
-                    fill_key = 'other'
+                    continue
                 order = event['order']
+                if order['first_time_user']:
+                    fill_key = 'other'
                 try:
                     cord = order['delivery_address']['coordinates']
+                    name = order['delivery_address']['name']
                     print 'got cords: {} from event: {}'.format(cord, event_name)
                     lat = cord['lat']
                     lon = cord['lon']
+                    city = order['delivery_address']['city']
                     msg = {'data': [
                         {
                             'fillKey': fill_key,
                             'latitude': lat,
                             'longitude': lon,
-                            'customer_name': 'gsin',
-                            'radius': 15,
-                            'user': 'tsudot',
-                            'yield': 400
-                        }
+                            'customer_name': name,
+                            'radius': 7,
+                            'city': city,
+                            'total_cost': order['total_cost'],
+                        },
                     ],
-                        'event': fill_key
+                        'event': event_name
                     }
                     for client in clients:
                         print 'sending payload: {} to client {}'.format(
-                            msg, client)
+                            msg, client.address[0])
                         client.sendMessage(address + u'' + json.dumps(msg))
                 except Exception as e:
                     print 'no cords found in {}, skipping'.format(event_name)

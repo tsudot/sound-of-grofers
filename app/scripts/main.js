@@ -8,10 +8,10 @@ function toTitleCase(str) {
 
 $(document).ready(function() {
     var EVENT_POPUP_WINDOW = 20;
-    var WS_HOST = "heartbeat.grofer.io"
+    var WS_HOST = 'heartbeat.grofer.io'
     var WS_PORT = 8086
 
-    var ws = new WebSocket("ws://" + WS_HOST + ":" + WS_PORT + "/");
+    var ws = new WebSocket('wss://' + WS_HOST + ':' + WS_PORT + '/');
 
     var receive_order_bombs = [];
     var other_bombs = [];
@@ -25,14 +25,14 @@ $(document).ready(function() {
 
     // Write your code in the same way as for native WebSocket:
     ws.onopen = function() {
-        ws.send("Hello");  // Sends a message.
+        ws.send('Hello');  // Sends a message.
     };
 
     ws.onmessage = function(e) {
         // Receives a message.
         var data = JSON.parse(e.data)
 
-        if (data['event'] == "receive_order") {
+        if (data['event'] == 'receive_order') {
             receive_order_bombs.push(data['data'][0])
             receive_order_ui_pops = receive_order_bombs.slice(-EVENT_POPUP_WINDOW);
             $('.legend #customer_name').text(toTitleCase(data['data'][0]['customer_name']))
@@ -49,7 +49,7 @@ $(document).ready(function() {
     };
 
     ws.onclose = function() {
-        console.log("closed");
+        console.log('closed');
     };
 
     var world_map = new Datamap({
@@ -74,8 +74,8 @@ $(document).ready(function() {
         fills: {
             'add': '#306596',
             'subtract': '#cc4731',
-            'receive_order': '#01ffff',
-            'other': '#F26E21',
+            'other': '#01ffff',
+            'receive_order': '#F26E21',
             'IND': '#004057',
             defaultFill: '#d8e7ed'
         },
